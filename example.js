@@ -38,15 +38,26 @@ async function validateJSONL(file) {
 	return true;
 }
 
-async function uploadDataset() {
-	if (await validateJSONL('career_chat.jsonl')) {
+async function uploadDataset ()
+{
+	const fileStream = fs.createReadStream('dataset.jsonl');
+
+let firstLine = '';
+fileStream.on('dataset', (chunk) => {
+  firstLine += chunk;
+  if(firstLine.indexOf('\n') !== -1) {
+    console.log(firstLine);
+    fileStream.destroy();  
+  }
+})
+	if (await validateJSONL('dataset.jsonl')) {
 		const status = await openai.files.create({
-			file: fs.createReadStream('careerchat.jsonl'),
+			file: fs.createReadStream('refugeeAdvisor.jsonl'),
 
 			purpose: 'fine-tune',
 		});
 
-		console.log(status);
+		console.log("STATUS IS",status);
 
 		return status.id;
 	}
@@ -87,6 +98,6 @@ async function getModelCompletion(modelId) {
 
 // uploadDataset(); // Step 1: Upload the dataset
 
-// fineTuneModel('YOUR_FILE_ID'); // Step 2: Fine-tune the model. Replace 'YOUR_FILE_ID' with the file ID from the previous step.
+fineTuneModel('file-BuZ4iZyhlC0mIA2oSN578ei4'); // Step 2: Fine-tune the model. Replace 'YOUR_FILE_ID' with the file ID from the previous step.
 
-// getModelCompletion('YOUR_FINE_TUNED_MODEL_ID'); // Step 3: Get a completion. Replace 'YOUR_FINE_TUNED_MODEL_ID' with the model ID from the email.
+// getModelCompletion("ft:gpt-3.5-turbo-0613:personal::8dIWEf7p"); // Step 3: Get a completion. Replace 'YOUR_FINE_TUNED_MODEL_ID' with the model ID from the email.

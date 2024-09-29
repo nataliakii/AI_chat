@@ -11,16 +11,19 @@ const port = 3000;
 app.use(express.json());
 
 app.post('/chat', async (req, res) => {
-	try {
-		const userQuery = req.body.message; // Get user message from request body
+	try
+	{
+		console.log('Request Body:', req.body);
+		const userQuery = req.body.message || ''; 
+		console.log('User Query:', userQuery);
 		const completion = await openai.chat.completions.create({
 			messages: [
 				{
 					role: 'user',
-					content: userQuery,
+					content: `I'm looking for a Software engineer job! ${userQuery}`,
 				},
 			],
-			model: process.env.FT_MODEL_ID, // Use your fine-tuned model ID
+			model: process.env.FT_MODEL_ID,
 		});
 
 		res.send(completion.choices[0]); // Send the response back to the client
